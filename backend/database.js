@@ -247,3 +247,15 @@ export async function deleteTicket(id, {TicketDeleteStatus }) {
 //         throw error;
 //     }
 // }
+
+export async function getUserTickets(userId){
+    const query = `SELECT * FROM tbl_tickets WHERE userId = ?`; // Adjust the table and column names as needed
+    const [tickets] = await pool.execute(query, [userId]);
+    return tickets;
+  };
+
+
+//   export async function getTickets(){
+//     const [rows] = await pool.query("select * from tbl_tickets WHERE ticketDeleteStatus != 1")
+//     return rows
+// }

@@ -1,5 +1,5 @@
 import express from 'express'
-import {getUsers,getTickets,createUser,login, createTicket,updateTicket,deleteTicket} from './database.js'
+import {getUsers,getTickets,createUser,login, createTicket,updateTicket,deleteTicket, getUserTickets} from './database.js'
 import bodyParser from 'body-parser'
 import session from 'express-session';
 import cors from 'cors';
@@ -50,16 +50,33 @@ app.get("/users", async (req, res)=>{
 })
 
 
-app.get("/tickets", async (req, res)=>{
+// app.get("/tickets", async (req, res)=>{
+//     const userId = req.session.userId; // Get userId from session
+
+//     if (!userId) {
+//         return res.status(401).json({ message: 'User not logged in' });
+//     }
+
+//     const data = await getTickets()
+//     res.send(data)
+// })
+
+
+app.get("/tickets", async (req, res) => {
     const userId = req.session.userId; // Get userId from session
 
     if (!userId) {
         return res.status(401).json({ message: 'User not logged in' });
     }
 
-    const data = await getTickets()
-    res.send(data)
-})
+    try {
+        const tickets = await getUserTickets(userId); // Fetch only user's tickets
+        res.json(tickets);
+    } catch (error) {
+        console.error('Error fetching tickets:', error);
+        res.status(500).json({ message: 'Error fetching tickets' });
+    }
+});
 
 
 
